@@ -14,10 +14,11 @@
 
         cargoToml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
         name = cargoToml.package.name;
-      in rec
+      in
+      rec
       {
         devShell = pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [ cargo rustc rust-analyzer ];
+          nativeBuildInputs = with pkgs; [ cargo rustc rust-analyzer rustfmt ];
 
           RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
         };
