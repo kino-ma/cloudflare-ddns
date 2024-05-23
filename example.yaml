@@ -1,0 +1,5 @@
+token: cloudflare-token
+key: api-key
+zone_identifier: identifier
+ttl: optional-record-ttl
+proxied: true
