@@ -1,12 +1,18 @@
+use std::error::Error;
+
 use clap::Parser;
 use cmd::Cli;
 
 mod cmd;
+mod ddns;
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
+    let configs = cli.get_config()?;
+    let params = cli.get_params();
 
-    let token = cli.token;
-    let key = cli.key;
-    let identifier = cli.zone_identifier;
+    println!("configs = {configs:?}");
+    println!("params  = {params:?}");
+
+    Ok(())
 }
