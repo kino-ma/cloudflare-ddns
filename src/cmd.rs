@@ -1,4 +1,5 @@
 use clap::Parser;
+use url::Url;
 
 use crate::ddns::{Params, UpdateConfigs};
 
@@ -6,7 +7,6 @@ use crate::ddns::{Params, UpdateConfigs};
 #[command(version, about, long_about = None)]
 pub struct Cli {
     pub name: String,
-    pub content: String,
 
     #[arg(short, long)]
     pub file: Option<String>,
@@ -18,16 +18,17 @@ pub struct Cli {
     #[arg(short = 'i', long)]
     pub zone_identifier: Option<String>,
     #[arg(long)]
-    pub ttl: Option<String>,
+    pub ttl: Option<u32>,
     #[arg(long)]
-    pub proxied: Option<String>,
+    pub proxied: Option<bool>,
+    #[arg(short = 'u', long)]
+    pub custom_url: Option<String>,
 }
 
 impl Cli {
     pub fn get_params(&self) -> Params {
         Params {
             name: self.name.clone(),
-            content: self.content.clone(),
         }
     }
 
@@ -41,12 +42,18 @@ impl Cli {
     }
 
     pub fn try_into_configs(self) -> Option<UpdateConfigs> {
+        let custom_url = self
+            .custom_url
+            .as_ref()
+            .map(|u| Url::parse(&u).expect("try_into_configs: invalid custom url"));
+
         let configs = UpdateConfigs {
             token: self.token?,
             key: self.key?,
             zone_identifier: self.zone_identifier?,
             ttl: self.ttl,
             proxied: self.proxied,
+            custom_url,
         };
 
         Some(configs)
