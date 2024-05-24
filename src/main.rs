@@ -5,6 +5,7 @@ use cmd::Cli;
 
 mod cmd;
 mod ddns;
+mod ip;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
