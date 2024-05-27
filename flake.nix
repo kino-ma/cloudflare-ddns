@@ -14,11 +14,18 @@
 
         cargoToml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
         name = cargoToml.package.name;
+
+        deps = with pkgs; [ cargo rustc rust-analyzer rustfmt gcc clang iconv ] ++ (if system == "aarch64-darwin" then with pkgs.darwin.apple_sdk;
+          [
+            frameworks.CoreFoundation
+            frameworks.CoreServices
+            frameworks.SystemConfiguration
+          ] else [ ]);
       in
       rec
       {
         devShell = pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [ cargo rustc rust-analyzer rustfmt ];
+          buildInputs = deps;
 
           RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
         };
@@ -29,6 +36,7 @@
               inherit (cargoToml.package) name version;
               src = ./.;
               cargoLock.lockFile = ./Cargo.lock;
+              buildInputs = deps;
             };
         };
         defaultPackage = packages.${name};
