@@ -5,7 +5,7 @@ use std::{
 
 use reqwest::Client;
 
-const CHECK_IP_URL: &'static str = "https://domains.google.com/checkip";
+const CHECK_IP_URL: &'static str = "https://checkip.amazonaws.com";
 
 pub async fn get_ipv4(preferred_addr: Option<Ipv4Addr>) -> Result<Ipv4Addr, String> {
     let addr: IpAddr = preferred_addr.unwrap_or("0.0.0.0".parse().unwrap()).into();
@@ -38,6 +38,28 @@ async fn get<T: FromStr>(client: Client) -> Result<T, String> {
         .map_err(|e| format!("ip::get: receiving response text failed: {e}"))?;
 
     addr_str
+        .trim()
         .parse()
-        .map_err(|_| format!("failed to parse returned IP address"))
+        .map_err(|_| format!("failed to parse returned IP address: '{addr_str}'"))
+}
+
+#[cfg(test)]
+mod test {
+    use std::net::Ipv4Addr;
+
+    #[test]
+    fn test_parse_ipv4_with_newline() {
+        let addr = "192.0.2.1\n";
+        addr.parse::<Ipv4Addr>().unwrap_err();
+
+        let parsed: Ipv4Addr = addr.trim().parse().unwrap();
+        assert_eq!(parsed, Ipv4Addr::new(192, 0, 2, 1));
+    }
+
+    #[test]
+    fn test_parse_ipv4() {
+        let addr = "192.0.2.1";
+        let parsed: Ipv4Addr = addr.parse().unwrap();
+        assert_eq!(parsed, Ipv4Addr::new(192, 0, 2, 1));
+    }
 }
