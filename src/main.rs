@@ -19,10 +19,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
     println!("params  = {params:?}");
 
     let ipv4 = get_ipv4(None).await?;
-    let ipv6 = get_ipv6(None).await?;
-
     println!("IPv4 = {ipv4}");
-    println!("IPv6 = {ipv6}");
+
+    // let ipv6 = get_ipv6(None).await?;
+    // println!("IPv6 = {ipv6}");
 
     Ok(())
 }
