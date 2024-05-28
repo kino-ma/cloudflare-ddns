@@ -32,15 +32,15 @@ async fn get<T: FromStr>(client: Client) -> Result<T, String> {
         .get(CHECK_IP_URL)
         .send()
         .await
-        .map_err(|e| format!("ip::get: request failed: {e}"))?
+        .map_err(|e| format!("ip::get: request failed: {e:?}"))?
         .text()
         .await
         .map_err(|e| format!("ip::get: receiving response text failed: {e}"))?;
 
-    addr_str
-        .trim()
+    let trimed = addr_str.trim();
+    trimed
         .parse()
-        .map_err(|_| format!("failed to parse returned IP address: '{addr_str}'"))
+        .map_err(|_| format!("failed to parse returned IP address: '{trimed}'"))
 }
 
 #[cfg(test)]
@@ -49,7 +49,7 @@ mod test {
 
     #[test]
     fn test_parse_ipv4_with_newline() {
-        let addr = "192.0.2.1\n";
+        let addr = "133.27.170.188\n";
         addr.parse::<Ipv4Addr>().unwrap_err();
 
         let parsed: Ipv4Addr = addr.trim().parse().unwrap();
