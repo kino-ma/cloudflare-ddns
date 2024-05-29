@@ -118,3 +118,17 @@ async fn send_request(
 
     client.request(&endpoint).await
 }
+
+pub fn content_to_string(content: &DnsContent) -> String {
+    use DnsContent::*;
+
+    match content {
+        A { content } => content.to_string(),
+        AAAA { content } => content.to_string(),
+        TXT { content } => format!("TXT '{content}'"),
+        MX { content, priority } => format!("MX {content} ({priority})"),
+        CNAME { content } => format!("CNAME => {content}"),
+        SRV { content } => format!("SRV {content}"),
+        NS { content } => format!("NS {content}"),
+    }
+}
