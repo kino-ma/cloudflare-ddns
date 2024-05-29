@@ -33,7 +33,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         );
 
         if let DnsContent::AAAA { .. } = record.content {
-            println!("WARN: AAAA records are currently not supported. Skipping.\n");
+            println!("  WARN: AAAA records are currently not supported. Skipping.");
             continue;
         }
 
@@ -42,7 +42,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
             name: cli.name.clone(),
         };
         update_record(&configs, &params, ipv4.into()).await?;
-        println!()
     }
 
     println!();
