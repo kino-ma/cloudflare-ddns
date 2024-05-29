@@ -2,6 +2,7 @@ use std::error::Error;
 
 use clap::Parser;
 
+use cloudflare::endpoints::dns::DnsContent;
 use cmd::Cli;
 use ddns::{get_records, update_record, Params};
 use ip::get_ipv4;
@@ -28,6 +29,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
     }
 
     for record in records.iter() {
+        if let DnsContent::AAAA { .. } = record.content {
+            println!("WARN: AAAA records are currently not supported. Skipping.");
+            continue;
+        }
+
         let params = Params {
             id: record.id.clone(),
             name: cli.name.clone(),
@@ -36,5 +42,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
         println!("Updated: {resp:?}");
     }
 
+    println!("\nDone!");
     Ok(())
 }
