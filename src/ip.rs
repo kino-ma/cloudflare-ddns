@@ -50,7 +50,7 @@ mod test {
 
     #[test]
     fn test_parse_ipv4_with_newline() {
-        let addr = "133.27.170.188\n";
+        let addr = "192.0.2.1\n";
         addr.parse::<Ipv4Addr>().unwrap_err();
 
         let parsed: Ipv4Addr = addr.trim().parse().unwrap();
