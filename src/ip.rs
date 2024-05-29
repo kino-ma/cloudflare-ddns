@@ -17,6 +17,7 @@ pub async fn get_ipv4(preferred_addr: Option<Ipv4Addr>) -> Result<Ipv4Addr, Stri
     get(client).await
 }
 
+#[allow(unused)]
 pub async fn get_ipv6(preferred_addr: Option<Ipv6Addr>) -> Result<Ipv6Addr, String> {
     let addr: IpAddr = preferred_addr.unwrap_or("::".parse().unwrap()).into();
     let client = Client::builder()

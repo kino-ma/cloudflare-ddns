@@ -3,7 +3,8 @@ use std::error::Error;
 use clap::Parser;
 
 use cmd::Cli;
-use ip::{get_ipv4, get_ipv6};
+use ddns::{get_records, update_record, Params};
+use ip::get_ipv4;
 
 mod cmd;
 mod ddns;
@@ -13,16 +14,27 @@ mod ip;
 async fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
     let configs = cli.get_config()?;
-    let params = cli.get_params();
 
     println!("configs = {configs:?}");
-    println!("params  = {params:?}");
 
     let ipv4 = get_ipv4(None).await?;
-    println!("IPv4 = {ipv4}");
+    println!("Updating address to: {ipv4}");
 
-    // let ipv6 = get_ipv6(None).await?;
-    // println!("IPv6 = {ipv6}");
+    let records = get_records(configs.clone(), &cli.name).await?;
+    println!("Got records: {records:?}");
+
+    if records.len() < 1 {
+        panic!("No records found for name {:?}", cli.name);
+    }
+
+    for record in records.iter() {
+        let params = Params {
+            id: record.id.clone(),
+            name: cli.name.clone(),
+        };
+        let resp = update_record(&configs, &params, ipv4.into()).await?;
+        println!("Updated: {resp:?}");
+    }
 
     Ok(())
 }

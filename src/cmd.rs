@@ -1,7 +1,7 @@
 use clap::Parser;
 use url::Url;
 
-use crate::ddns::{Params, UpdateConfigs};
+use crate::ddns::UpdateConfigs;
 
 #[derive(Clone, Debug, Parser)]
 #[command(version, about, long_about = None)]
@@ -26,12 +26,6 @@ pub struct Cli {
 }
 
 impl Cli {
-    pub fn get_params(&self) -> Params {
-        Params {
-            name: self.name.clone(),
-        }
-    }
-
     pub fn get_config(&self) -> Result<UpdateConfigs, String> {
         match self.file.as_deref() {
             Some(file) => Ok(UpdateConfigs::read_yaml(file).map_err(|e| e.to_string())?),
