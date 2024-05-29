@@ -20,6 +20,10 @@
             frameworks.CoreFoundation
             frameworks.CoreServices
             frameworks.SystemConfiguration
+          ] else if system == "x86_64-linux" then with pkgs;
+          [
+            openssl
+            pkg-config
           ] else [ ]);
       in
       rec
@@ -36,7 +40,9 @@
               inherit (cargoToml.package) name version;
               src = ./.;
               cargoLock.lockFile = ./Cargo.lock;
+              propagatedBuildInputs = deps;
               buildInputs = deps;
+              nativeBuildInputs = deps;
             };
         };
         defaultPackage = packages.${name};
