@@ -35,7 +35,7 @@
         };
 
         packages = rec {
-          "${name}" = pkgs.rustPlatform.buildRustPackage
+          "${name}" = pkgs.pkgsMusl.rustPlatform.buildRustPackage
             {
               inherit (cargoToml.package) name version;
               src = ./.;
