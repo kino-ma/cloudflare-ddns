@@ -40,8 +40,8 @@
               inherit (cargoToml.package) name version;
               src = ./.;
               cargoLock.lockFile = ./Cargo.lock;
-              propagatedBuildInputs = deps;
-              buildInputs = deps;
+
+              buildInputs = [ pkgs.openssl ];
               nativeBuildInputs = deps;
             };
         };
